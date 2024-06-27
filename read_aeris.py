@@ -1,17 +1,13 @@
-import os
+import os, sys
 import glob
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 
-def get_raw_aeris_data(raw_data_path: str, csv_data_path = None):
+def get_raw_aeris_data(raw_data_path: str) -> pd.DataFrame:
     """
     process raw aeris csvs
     """
-
-    if csv_data_path is not None:
-        if isinstance(csv_data_path, str) and os.path.isfile(f"{csv_data_path}/aeris.csv"):
-            final = pd.read_csv(f"{csv_data_path}/aeris.csv", parse_dates=['Timestamp'])
-            return final
 
     df_list = []
     files = sorted(glob.glob(f"{raw_data_path}/Pico*.txt"))
@@ -28,17 +24,12 @@ def get_raw_aeris_data(raw_data_path: str, csv_data_path = None):
                       "Lat_a", "Lon_a"
                      ]
         dataframe["Timestamp"] = pd.to_datetime(dataframe["Timestamp"])
-
         dataframe = dataframe.astype(float, errors="ignore")
-
         df_list.append(dataframe)
 
-    final = pd.concat(df_list)
-
-    if isinstance(csv_data_path, str):
-        if not os.path.exists(csv_data_path):
-            os.makedirs(csv_data_path)
-        final.to_csv(f"{csv_data_path}/aeris.csv")
+    final = pd.concat(df_list, ignore_index=True)
+    seconds = np.array(final["Timestamp"] - final["Timestamp"].min()) / np.timedelta64(1,'s')
+    final.insert(1, 'Seconds_a', seconds)
 
     return final
 
