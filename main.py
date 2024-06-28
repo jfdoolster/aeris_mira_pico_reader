@@ -8,7 +8,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--directory', required=True, type=str,
         help='path to csv directory containing one or more raw, timestamped Aeris Mira Pico *.txt files')
-    parser.add_argument('-o', '--output', default="data/output.csv", type=str,
+    parser.add_argument('-o', '--output', default=os.path.abspath(f"{os.path.dirname(__file__):s}/data/output.csv"), type=str,
         help="output csv filename or directory. Default to ./data/output.csv")
     args = parser.parse_args()
     argdict = vars(args)
