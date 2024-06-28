@@ -9,7 +9,7 @@ Developed and tested with python 3.11
 ```bash
 python main.py -d /path/to/dir/
 
-python main.py -d data
+python main.py -d data/
 ```
 
 ### Output:
